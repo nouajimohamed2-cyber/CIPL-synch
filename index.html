@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bulletin d'Appel - CIPL | Synchronisation</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif; background: #eef2f7; padding: 24px 20px; color: #1e293b; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 24px; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #0a2a38 0%, #0f3b4f 100%); padding: 20px 30px; color: white; border-bottom: 4px solid #e6b422; }
+        .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .header h1 span { background: #e6b422; color: #0b2b3b; font-size: 15px; padding: 4px 12px; border-radius: 30px; font-weight: 800; }
+        .header-sub { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 13px; font-weight: 500; opacity: 0.9; }
+        .sync-status { background: #f8fafc; padding: 8px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: flex-end; font-size: 12px; font-weight: 600; gap: 16px; }
+        .controls-bar { background: #f8fafc; padding: 14px 24px; border-bottom: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+        .date-lieu { display: flex; gap: 16px; background: white; padding: 6px 16px; border-radius: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); flex-wrap: wrap; align-items: center; }
+        .date-lieu label { font-weight: 700; color: #334155; font-size: 13px; }
+        .date-lieu input { border: 1px solid #cbd5e1; border-radius: 20px; padding: 4px 10px; font-weight: 500; background: #fefce8; font-size: 13px; }
+        .search-bar { flex: 1; max-width: 340px; display: flex; align-items: center; background: white; border-radius: 40px; border: 1px solid #cbd5e1; padding: 5px 14px; gap: 8px; }
+        .search-bar input { border: none; outline: none; width: 100%; font-size: 13.5px; padding: 5px 0; background: transparent; }
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        button { border: none; background: white; padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background: #0f3b4f; color: white; }
+        .btn-primary:hover { background: #1e5a74; }
+        .btn-gold { background: #e6b422; color: #2d2a1f; }
+        .btn-gold:hover { background: #d4a91a; }
+        .icon-btn { background: transparent; padding: 4px 8px; font-size: 12px; }
+        .icon-btn:hover { background: #e2e8f0; }
+        .filter-section { padding: 12px 24px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+        .filter-group { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .filter-group:last-child { margin-bottom: 0; }
+        .filter-label { font-weight: 800; font-size: 13px; color: #1e3a5f; background: #e6edf5; padding: 4px 12px; border-radius: 30px; white-space: nowrap; }
+        .filter-btn { background: white; border: 2px solid #cbd5e1; padding: 6px 18px; border-radius: 40px; font-weight: 700; font-size: 13px; cursor: pointer; }
+        .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+        .brigade-actions { display: inline-flex; gap: 6px; margin-left: 8px; }
+        .filter-count { background: #1e3a5f20; padding: 2px 8px; border-radius: 30px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; padding: 18px 24px; background: #ffffff; border-bottom: 1px solid #e9eef3; }
+        .stat-card { background: #f1f5f9; border-radius: 18px; padding: 12px; text-align: center; }
+        .stat-card .number { font-size: 32px; font-weight: 800; }
+        .present-num { color: #15803d; }
+        .absent-num { color: #b91c1c; }
+        .promo-stats { display: flex; gap: 16px; padding: 0 24px 16px 24px; flex-wrap: wrap; }
+        .promo-stat-card { flex: 1; min-width: 140px; background: white; border-radius: 14px; padding: 11px 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 4px solid; text-align: center; }
+        .promo-stat-card.epl3 { border-left-color: #8b5cf6; background: #f5f3ff; }
+        .promo-stat-card.epl4 { border-left-color: #10b981; background: #ecfdf5; }
+        .promo-stat-card.epl5 { border-left-color: #f59e0b; background: #fffbeb; }
+        .table-wrapper { padding: 0 22px 22px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #1e2f3a; color: white; padding: 11px 8px; text-align: center; border: 1px solid #2c4b5c; }
+        td { border: 1px solid #e0e7ef; padding: 9px 7px; vertical-align: middle; background: white; }
+        tbody tr:hover td { background: #f8fafc; }
+        .absent-row td { background: #fff6f0 !important; }
+        .grade-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-weight: 800; font-size: 11px; min-width: 55px; }
+        .grade-epl3 { background: #8b5cf6; color: white; }
+        .grade-epl4 { background: #10b981; color: white; }
+        .grade-epl5 { background: #f59e0b; color: white; }
+        .brig-badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-weight: 700; font-size: 11px; min-width: 60px; }
+        .bb-alpha  { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+        .bb-bravo  { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .bb-charlie{ background: #fef9c3; color: #92400e; border: 1px solid #fcd34d; }
+        .bb-delta  { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+        .bb-none   { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+        select { padding: 5px 8px; border-radius: 18px; border: 1px solid #cbd5e1; background: white; font-weight: 500; font-size: 12px; cursor: pointer; }
+        .motif-select { min-width: 138px; }
+        .action-icons { display: flex; gap: 6px; justify-content: center; }
+        .action-icons button { background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 6px; border-radius: 20px; }
+        .recap-section { background: #fefbf5; margin: 8px 22px 22px; border-radius: 18px; padding: 18px; border: 1px solid #fee2c2; }
+        .recap-title { font-size: 17px; font-weight: 800; margin-bottom: 14px; border-left: 5px solid #e6b422; padding-left: 14px; }
+        .motif-group { margin-bottom: 16px; }
+        .motif-header { font-weight: 800; background: #f1e9d8; display: inline-block; padding: 3px 12px; border-radius: 30px; font-size: 12.5px; margin-bottom: 7px; }
+        .people-list { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 5px; }
+        .person-tag { background: white; border-radius: 30px; padding: 3px 11px; font-size: 11.5px; font-weight: 600; border: 1px solid #f0c9a0; }
+        .footer-note { margin: 12px 24px 24px; text-align: right; font-style: italic; color: #4b5563; font-size: 12px; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+        @media (max-width: 700px) {
+            th, td { font-size: 11px; padding: 5px 4px; }
+            .controls-bar, .filter-group { flex-direction: column; align-items: stretch; }
+            .search-bar { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📋 BULLETIN D'APPEL <span>CIPL – Synchronisation multi-appareils</span></h1>
+        <div class="header-sub">✈️ FORCES ROYALES AIR – BASE AÉRIENNE DE SOUTIEN GÉNÉRAL</div>
+    </div>
+    <div class="sync-status">
+        <span id="syncIndicator">🔄 Connexion...</span>
+        <span id="deviceId">📱 Appareil: --</span>
+    </div>
+    <div class="controls-bar">
+        <div class="date-lieu">
+            <div><label>🏢 LIEU :</label> <input type="text" id="lieuInput" value="BENSLIMANE"></div>
+            <div><label>📆 DATE :</label> <input type="text" id="dateInput" value="01/05/2026"></div>
+        </div>
+        <div class="search-bar"><span>🔍</span><input type="text" id="searchInput" placeholder="Rechercher..."></div>
+        <div class="action-buttons">
+            <button class="btn-gold" id="resetPresentBtn">✅ Tout remettre PRÉSENT</button>
+            <button class="btn-primary" id="generateDocBtn">📄 GÉNÉRER BULLETIN (DOC)</button>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filter-section"><div class="filter-group"><span class="filter-label">🟣 EPL3</span><button class="filter-btn" data-filter="epl3">EPL3</button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL3" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL3" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL3" data-action="add">➕ Ajouter</button></div></div></div>
+    <div class="filter-section"><div class="filter-group"><span class="filter-label">🎓 EPL4</span><button class="filter-btn" data-filter="epl4_Alpha">🔵 Alpha <span id="e4AlphaCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL4" data-brigade="Alpha" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Alpha" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Alpha" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl4_Bravo">🟢 Bravo <span id="e4BravoCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL4" data-brigade="Bravo" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Bravo" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Bravo" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl4_Charlie">🟡 Charlie <span id="e4CharlieCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL4" data-brigade="Charlie" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Charlie" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Charlie" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl4_Delta">🔴 Delta <span id="e4DeltaCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL4" data-brigade="Delta" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Delta" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Delta" data-action="add">➕ Ajouter</button></div></div></div>
+    <div class="filter-section"><div class="filter-group"><span class="filter-label">✈️ EPL5</span><button class="filter-btn" data-filter="epl5_Alpha">🔵 Alpha <span id="e5AlphaCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL5" data-brigade="Alpha" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Alpha" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Alpha" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl5_Bravo">🟢 Bravo <span id="e5BravoCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL5" data-brigade="Bravo" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Bravo" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Bravo" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl5_Charlie">🟡 Charlie <span id="e5CharlieCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL5" data-brigade="Charlie" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Charlie" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Charlie" data-action="add">➕ Ajouter</button></div></div></div>
+    <div class="filter-section"><div class="filter-group"><button class="filter-btn active" data-filter="all">🌍 Afficher toutes les promotions</button></div></div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="number" id="totalCount">0</div><div class="label">Effectif Total</div></div>
+        <div class="stat-card"><div class="number present-num" id="presentCount">0</div><div class="label">Présents</div></div>
+        <div class="stat-card"><div class="number absent-num" id="absentCount">0</div><div class="label">Absents</div></div>
+    </div>
+    <div class="promo-stats" id="promoStatsContainer"></div>
+    <div class="table-wrapper">
+        <table id="mainTable">
+            <thead><tr><th>#</th><th>PROMO</th><th>BRIGADE</th><th>NOM</th><th>PRÉNOM</th><th>PRÉSENCE</th><th>MOTIF</th><th>ACTIONS</th></tr></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    <div class="recap-section"><div class="recap-title">📌 RÉCAPITULATIF DES ABSENCES</div><div id="dynamicRecap"></div></div>
+    <div class="footer-note">✈️ Motifs : MISSION, PTC, PCD, PLD, ASM. Synchronisation Firebase.</div>
+</div>
+
+<script>
+    (function() {
+        // Configuration Firebase (à remplacer par vos propres clés si besoin)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCZkaRlj0pplwLwjihsJEAQUPZ5QZKPQoo",
+            authDomain: "cipl-sync.firebaseapp.com",
+            projectId: "cipl-sync",
+            storageBucket: "cipl-sync.firebasestorage.app",
+            messagingSenderId: "795475932370",
+            appId: "1:795475932370:web:aa2a617439c09b20f1a90b"
+        };
+
+        if (typeof firebase === 'undefined') {
+            document.getElementById("syncIndicator").innerHTML = "❌ Firebase SDK non chargé";
+            return;
+        }
+        let app;
+        try { app = firebase.initializeApp(firebaseConfig); } catch(e) { app = firebase.app(); }
+        const db = firebase.firestore();
+        const settingsDocRef = db.collection("cipl").doc("settings");
+        const studentsCollection = db.collection("cipl").doc("students").collection("list");
+
+        let deviceId = localStorage.getItem("cipl_device_id");
+        if (!deviceId) {
+            deviceId = "dev_" + Date.now() + "_" + Math.random().toString(36).substr(2, 8);
+            localStorage.setItem("cipl_device_id", deviceId);
+        }
+        document.getElementById("deviceId").innerText = `📱 Appareil: ${deviceId.slice(-8)}`;
+
+        let allStudents = [];
+        let customMotifs = [];
+        let activeFilter = "all";
+
+        const tbody = document.getElementById("tableBody");
+        const totalSpan = document.getElementById("totalCount");
+        const presentSpan = document.getElementById("presentCount");
+        const absentSpan = document.getElementById("absentCount");
+        const recapDiv = document.getElementById("dynamicRecap");
+        const promoStatsDiv = document.getElementById("promoStatsContainer");
+        const lieuInput = document.getElementById("lieuInput");
+        const dateInput = document.getElementById("dateInput");
+        const searchInput = document.getElementById("searchInput");
+        const syncIndicator = document.getElementById("syncIndicator");
+
+        function esc(s) { return s?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ""; }
+
+        function updateCountersAndRecap(list) {
+            totalSpan.innerText = list.length;
+            const p = list.filter(s => s.presence === "PRESENT").length;
+            presentSpan.innerText = p;
+            absentSpan.innerText = list.length - p;
+            const abs = list.filter(s => s.presence === "ABSENT");
+            if (!abs.length) recapDiv.innerHTML = `<div style="background:#e6f7e6;padding:12px;border-radius:16px;text-align:center;">✅ TOUT LE PERSONNEL AFFICHÉ EST PRÉSENT</div>`;
+            else {
+                const groups = new Map();
+                abs.forEach(a => { let m = a.motif?.trim() ? a.motif.toUpperCase() : "MOTIF NON RENSEIGNÉ"; if (!groups.has(m)) groups.set(m, []); groups.get(m).push(a); });
+                let h = "";
+                for (const [mot, arr] of [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0]))) {
+                    h += `<div class="motif-group"><div class="motif-header">📌 ${mot} (${arr.length})</div><div class="people-list">`;
+                    arr.forEach(s => h += `<span class="person-tag">${s.grade} ${s.brigade ? `[${s.brigade}] ` : ''}${esc(s.prenom)} ${esc(s.nom)}</span>`);
+                    h += `</div></div>`;
+                }
+                recapDiv.innerHTML = h;
+            }
+            const e3 = list.filter(s=>s.grade==="EPL3");
+            const e4 = list.filter(s=>s.grade==="EPL4");
+            const e5 = list.filter(s=>s.grade==="EPL5");
+            promoStatsDiv.innerHTML = `
+                <div class="promo-stat-card epl3"><div class="promo-title">🟣 EPL3</div><div class="promo-numbers"><span>📊 ${e3.length}</span><span>✅ ${e3.filter(s=>s.presence==="PRESENT").length}</span><span>❌ ${e3.filter(s=>s.presence==="ABSENT").length}</span></div></div>
+                <div class="promo-stat-card epl4"><div class="promo-title">🟢 EPL4</div><div class="promo-numbers"><span>📊 ${e4.length}</span><span>✅ ${e4.filter(s=>s.presence==="PRESENT").length}</span><span>❌ ${e4.filter(s=>s.presence==="ABSENT").length}</span></div></div>
+                <div class="promo-stat-card epl5"><div class="promo-title">🟡 EPL5</div><div class="promo-numbers"><span>📊 ${e5.length}</span><span>✅ ${e5.filter(s=>s.presence==="PRESENT").length}</span><span>❌ ${e5.filter(s=>s.presence==="ABSENT").length}</span></div></div>`;
+        }
+
+        function renderTable() {
+            let list = [...allStudents];
+            if (activeFilter === "epl3") list = list.filter(s => s.grade === "EPL3");
+            else if (activeFilter === "epl4_Alpha") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Alpha");
+            else if (activeFilter === "epl4_Bravo") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Bravo");
+            else if (activeFilter === "epl4_Charlie") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Charlie");
+            else if (activeFilter === "epl4_Delta") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Delta");
+            else if (activeFilter === "epl5_Alpha") list = list.filter(s => s.grade === "EPL5" && s.brigade === "Alpha");
+            else if (activeFilter === "epl5_Bravo") list = list.filter(s => s.grade === "EPL5" && s.brigade === "Bravo");
+            else if (activeFilter === "epl5_Charlie") list = list.filter(s => s.grade === "EPL5" && s.brigade === "Charlie");
+            const q = searchInput.value.trim().toLowerCase();
+            if (q) list = list.filter(s => s.nom.toLowerCase().includes(q) || s.prenom.toLowerCase().includes(q) || (s.brigade || "").toLowerCase().includes(q) || s.grade.toLowerCase().includes(q));
+            const motifs = [...new Set([...["ASM","MISSION","PCD","PLD","PTC"], ...customMotifs])];
+            let html = "";
+            list.forEach((s, idx) => {
+                const isAbsent = s.presence === "ABSENT";
+                const gradeClass = s.grade === 'EPL3' ? 'grade-epl3' : (s.grade === 'EPL4' ? 'grade-epl4' : 'grade-epl5');
+                let brigadeHtml = `<span class="brig-badge bb-none">—</span>`;
+                if (s.brigade) {
+                    const icon = {Alpha:'🔵', Bravo:'🟢', Charlie:'🟡', Delta:'🔴'}[s.brigade] || '';
+                    const cls = {Alpha:'bb-alpha', Bravo:'bb-bravo', Charlie:'bb-charlie', Delta:'bb-delta'}[s.brigade];
+                    brigadeHtml = `<span class="brig-badge ${cls}">${icon} ${s.brigade}</span>`;
+                }
+                const motifOpts = motifs.map(m => `<option value="${m}" ${s.motif === m ? 'selected' : ''}>${m}</option>`).join('');
+                html += `<tr class="${isAbsent ? 'absent-row' : ''}" data-student-id="${s.id}">
+                    <td style="text-align:center;">${idx+1}</td>
+                    <td style="text-align:center"><span class="grade-badge ${gradeClass}">${s.grade}</span></td>
+                    <td style="text-align:center">${brigadeHtml}</td>
+                    <td style="font-weight:700;">${esc(s.nom)}</td>
+                    <td>${esc(s.prenom)}</td>
+                    <td style="text-align:center">
+                        <select onchange="updatePresence('${s.id}', this.value)">
+                            <option value="PRESENT"${!isAbsent ? ' selected' : ''}>✅ PRÉSENT</option>
+                            <option value="ABSENT"${isAbsent ? ' selected' : ''}>❌ ABSENT</option>
+                        </select>
+                    </td>
+                    <td style="text-align:center">
+                        <select class="motif-select" onchange="updateMotif('${s.id}', this.value)" ${!isAbsent ? 'disabled' : ''}>
+                            <option value="">— Sélectionner —</option>
+                            <option value="__AUTRE__">➕ Autre motif…</option>
+                            ${motifOpts}
+                        </select>
+                    </td>
+                    <td class="action-icons">
+                        <button onclick="editStudent('${s.id}')" title="Modifier">✏️</button>
+                        <button onclick="deleteStudent('${s.id}')" title="Supprimer">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+            updateCountersAndRecap(list);
+            document.getElementById("e4AlphaCount").innerText = allStudents.filter(s => s.grade === "EPL4" && s.brigade === "Alpha").length;
+            document.getElementById("e4BravoCount").innerText = allStudents.filter(s => s.grade === "EPL4" && s.brigade === "Bravo").length;
+            document.getElementById("e4CharlieCount").innerText = allStudents.filter(s => s.grade === "EPL4" && s.brigade === "Charlie").length;
+            document.getElementById("e4DeltaCount").innerText = allStudents.filter(s => s.grade === "EPL4" && s.brigade === "Delta").length;
+            document.getElementById("e5AlphaCount").innerText = allStudents.filter(s => s.grade === "EPL5" && s.brigade === "Alpha").length;
+            document.getElementById("e5BravoCount").innerText = allStudents.filter(s => s.grade === "EPL5" && s.brigade === "Bravo").length;
+            document.getElementById("e5CharlieCount").innerText = allStudents.filter(s => s.grade === "EPL5" && s.brigade === "Charlie").length;
+        }
+
+        window.updatePresence = async function(id, presence) {
+            const student = allStudents.find(s => s.id === id);
+            if (!student) return;
+            if (presence === "PRESENT") student.motif = "";
+            await studentsCollection.doc(id).update({ presence, motif: student.motif, lastModified: firebase.firestore.FieldValue.serverTimestamp(), modifiedBy: deviceId });
+        };
+        window.updateMotif = async function(id, motifRaw) {
+            const student = allStudents.find(s => s.id === id);
+            if (!student) return;
+            let finalMotif = motifRaw;
+            if (motifRaw === "__AUTRE__") {
+                const newMotif = prompt("✏️ Motif d'absence :");
+                if (!newMotif || !newMotif.trim()) return;
+                finalMotif = newMotif.trim().toUpperCase();
+                if (!customMotifs.includes(finalMotif)) {
+                    customMotifs.push(finalMotif);
+                    await settingsDocRef.update({ customMotifs });
+                }
+            }
+            student.motif = finalMotif || "";
+            student.presence = "ABSENT";
+            await studentsCollection.doc(id).update({ motif: student.motif, presence: "ABSENT", lastModified: firebase.firestore.FieldValue.serverTimestamp(), modifiedBy: deviceId });
+        };
+        window.editStudent = async function(id) {
+            const student = allStudents.find(s => s.id === id);
+            if (!student) return;
+            const newNom = prompt("Nouveau nom :", student.nom);
+            if (newNom && newNom.trim()) student.nom = newNom.trim().toUpperCase();
+            const newPrenom = prompt("Nouveau prénom :", student.prenom);
+            if (newPrenom && newPrenom.trim()) student.prenom = newPrenom.trim().toUpperCase();
+            await studentsCollection.doc(id).update({ nom: student.nom, prenom: student.prenom, lastModified: firebase.firestore.FieldValue.serverTimestamp(), modifiedBy: deviceId });
+        };
+        window.deleteStudent = async function(id) {
+            if (!confirm("Supprimer définitivement cet élève ?")) return;
+            await studentsCollection.doc(id).delete();
+        };
+
+        async function addStudent(grade, brigade, nom, prenom) {
+            const newId = `s_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+            const newStudent = {
+                id: newId, nom: nom.trim().toUpperCase(), prenom: prenom.trim().toUpperCase(),
+                grade, brigade: brigade || null, presence: "PRESENT", motif: "",
+                created: firebase.firestore.FieldValue.serverTimestamp(),
+                lastModified: firebase.firestore.FieldValue.serverTimestamp(),
+                modifiedBy: deviceId
+            };
+            await studentsCollection.doc(newId).set(newStudent);
+        }
+
+        async function setBrigadePresence(grade, brigade, presence, motif = "") {
+            const targets = allStudents.filter(s => s.grade === grade && (brigade ? s.brigade === brigade : true));
+            for (const s of targets) {
+                await studentsCollection.doc(s.id).update({ presence, motif: presence === "ABSENT" ? motif : "", lastModified: firebase.firestore.FieldValue.serverTimestamp(), modifiedBy: deviceId });
+            }
+        }
+
+        // Initialisation des données si vides
+        async function initializeDataIfEmpty() {
+            const snapshot = await studentsCollection.limit(1).get();
+            if (!snapshot.empty) return;
+            console.log("Base vide, création des données initiales...");
+
+            // EPL3 (18)
+            const epl3Data = [
+                {nom:"ACHAHBOUNE", prenom:"MOHAMMED AMINE"},{nom:"CHIHAB", prenom:"ESSAFI"},
+                {nom:"EL FASSI EL FIHRI", prenom:"MOHAMED"},{nom:"EL MAACHI", prenom:"HASSAN"},
+                {nom:"FOURARI", prenom:"YOUSSEF"},{nom:"HASSOUN", prenom:"AYA"},
+                {nom:"KASSID", prenom:"YASSINE"},{nom:"KHABOUSS", prenom:"YAHIA"},
+                {nom:"KIKER", prenom:"ABDERAHMAN"},{nom:"MEZRITI", prenom:"HOUDA"},
+                {nom:"NAJIH", prenom:"SAAD"},{nom:"NAKOURI", prenom:"MOHAMMED"},
+                {nom:"NASSIH", prenom:"SALAHEDDINE"},{nom:"OUCHALA", prenom:"OUSSAMA"},
+                {nom:"RAMDANI", prenom:"IKRAM"},{nom:"REMMAN", prenom:"SALIM"},
+                {nom:"ZEJLI", prenom:"LAMIAE"},{nom:"ZOUHIR", prenom:"RACHID"}
+            ];
+            // EPL4 Alpha (23)
+            const e4Alpha = [
+                ["BABALAHCEN","MOHAMED"],["BENALI","ANAS"],["BOUALLAGA","HAJAR"],["BOUZEGGAR","ADAM"],["DAOUDI","ACHRAF"],["EL BACHIRI","KHALIL"],["EL OMARI","NISRINE"],["EL KHAL","HATIM"],["EZ-ZAHOURI","AYMANE"],["GUITAOUI","AYA"],["HADAR","AHMED"],["KARMOUCHI","HIND"],["KAROUCHI","SALAHEDDINE"],["KASSBI","MOUAD"],["MEHNI","FATIMA EZZAHRA"],["MOUNAZIH","ILYASSE"],["NACIRI","SOUHAYLA"],["OUAKOUR","AYMANE"],["OUBENAL","HIBA"],["RAJAD","AFAF"],["REDA","SYHAM"],["SOUFI","MOHAMED"],["ZEKKAOUI","IHSSAN"]
+            ];
+            // EPL4 Bravo (23)
+            const e4Bravo = [
+                ["ECHBIHI","REDA"],["KHATTA","HAFSA"],["BOUNSIR","RANIA"],["ZAINABI","OTHMANE"],["BENAROUD","YOUSSEF"],["DERRAR","IKRAM"],["MESBAHI","MOHAMED"],["TAHROUCH","MARIA"],["KHABBAZ","KHALID"],["INEFLAS","ABDERRAHMANE"],["BARHRHOUJ","WIAME"],["MOURID","AHLAM"],["BOUCHRAHI","YASSMINE"],["LAMRANI","LINA"],["EL ALAMA","RAYANE"],["EL FAROUKI","AYMAN"],["AZOUGHAGH","WAEL"],["MESSOUDI","MOUAD"],["FITHANE","SARAH"],["SAFI","ALAA"],["OUACHAO","MOHAMMED"],["ABDELLAOUI","SOUFIANE"],["KARIM","YAHYA"]
+            ];
+            // EPL4 Charlie (23)
+            const e4Charlie = [
+                ["Afzagour","Hafsa"],["Ahmid","Youssef"],["Ahouzi","Zakaria"],["Bahir","Hajar"],["Belghiti","Asmae"],["Benabed","Hassan"],["Jamal Eddine","Ibrahim"],["Boughlala","Haitham"],["Bouhzama","Driss"],["Darrag","Fatima Zahra"],["Eddahbi","Oussama"],["El Ouardini","Reda"],["El Rhazoui","Mokhtar"],["Ghouat","Mohamed"],["Guerrab","Wissal"],["Jouahi","Adnane"],["Hanafi","Hamza Souhail"],["Hdouch","Ahmed"],["Laaroussi","Ali"],["Moujoual","Aya"],["Rafei","Adam"],["Wadih","Badr"],["BENHAMMOU","MOHAMMED"]
+            ];
+            // EPL4 Delta (23)
+            const e4Delta = [
+                ["AMALI","ZAKARIAE"],["ASKAOUYIT","YOUSSEF"],["BENBOUCHTA","ABDELADIM"],["BOUAKIL","SALAH"],["CHENTOUF","ABIR"],["EDDAOUDI","SAAD"],["EL ATARI","ADAM"],["ELHASSOUNI","MOURAD"],["EL HIHI","MANAL"],["EL YAAGOUBI","ABELGHANI"],["KARAMI","ADAM"],["KIDARI","RIM"],["MACHCMOURE","ACHRAF"],["NAJI","HAYTHAM"],["OUDDI","MOHAMMED"],["SKALLI","MEHDI"],["TABACHE","WASSIM"],["TAFALI","WAJIH"],["TOUZI","WISSAL"],["ZAD","BASMA"],["BENICHOU","DOAA"],["BOUHRAOUA","ISSAM"],["MERBAH","HOSSAM"]
+            ];
+            // EPL5 Alpha (16)
+            const e5Alpha = [
+                ["SMIDI","AMINE"],["LOTF ELILAH","ABDELBASSET"],["ALKALAY","SAAD"],["HAZZOUTE","TARIK"],["BAKKALI","IMRANE"],["RIDA","OUSSAMA"],["BENCHAJIA","MOHAMED REDA"],["GOUCHY","OUSSAMA"],["EL MOUSTARIH","HAFSSA"],["TOURAOUI","MOHAMED"],["LOUEKILI","MEHDI"],["BELRHITI","ABRARE"],["AIT KECHKECH","ANASS"],["AIT BENAALI","AMINE"],["ASSABAA","SAAD"],["BOURRAIS","AFAF"]
+            ];
+            // EPL5 Bravo (21)
+            const e5Bravo = [
+                ["OUKERROU","MOUAAD"],["OUAKAF","EL MEHDI"],["BENCHEKROUN","SALIM"],["MRABT","ZAKARIAE"],["EL OIZANI","ANASS"],["ELHAOUATE","MOHAMED"],["ZOUHRY","WALID"],["TINDOUFTE","MOHAMED TAHA"],["HAJRI","AYA"],["HASSOUNY","AYMAN"],["BERRAHOU","TAHA AHMED"],["AIT BEN HASSI","YOUSSEF AMINE"],["LAAYOUNE","MAJD"],["HAFI","LUKMAN"],["EL GOUTIT","AICHA"],["EL JEMMALI","OUMAIMA"],["BELBARD","ASSMAA"],["SELLAL","BASMA"],["BAKKAL","ANAS"],["LAMINE","MOHAMED BADR"],["MOULABBI","ANAS"]
+            ];
+            // EPL5 Charlie (21)
+            const e5Charlie = [
+                ["AMRHAR","HAITAM"],["BARIZ","ABDESSAMAD"],["EL-ACHIR","TAHA"],["AIT MANSOR","FATIMA EZZAHRA"],["EL MEKHANTAR","AYMANE"],["AL KHARASSANI","ABDELGHANI"],["CHOUIKH","HICHAM"],["RGUIG","KAWTAR"],["MOUHSSINY","KARIM"],["AMELI","AHMED YASSINE"],["SAOUD","KHADIJA"],["BOUMHAIDI","AMINE"],["NAJIHI","ANAS"],["KHALED","FAHD"],["EL IDRISSI BOUZAIDI","HATIM"],["ABBOUR","MOHAMED REDA"],["BRICHA","YOUSSRA"],["MOHAMED ABDOU","SEIF-EDDINE"],["HEDDA","ABDERRAHMANE"],["RAHOUI","YOUSSEF"],["BAMMI","SAFAE"]
+            ];
+
+            const batch = db.batch();
+            const now = firebase.firestore.FieldValue.serverTimestamp();
+
+            epl3Data.forEach(s => {
+                const id = `e3_${Date.now()}_${Math.random()}`;
+                const ref = studentsCollection.doc(id);
+                batch.set(ref, { id, nom: s.nom, prenom: s.prenom, grade: "EPL3", brigade: null, presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
+            });
+            e4Alpha.forEach(([n,p]) => {
+                const id = `e4a_${Date.now()}_${Math.random()}`;
+                const ref = studentsCollection.doc(id);
+                batch.set(ref, { id, nom: n, prenom: p, grade: "EPL4", brigade: "Alpha", presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
+            });
+            e4Bravo.forEach(([n,p]) => {
+                const id = `e4b_${Date.now()}_${Math.random()}`;
+                const ref = studentsCollection.doc(id);
+                batch.set(ref, { id, nom: n, prenom: p, grade: "EPL4", brigade: "Bravo", presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
+            });
+            e4Charlie.forEach(([n,p]) => {
+                const id = `e4c_${Date.now()}_${Math.random()}`;
+                const ref = studentsCollection.doc(id);
+                batch.set(ref, { id, nom: n, prenom: p, grade: "EPL4", brigade: "Charlie", presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
+            });
+            e4Delta.forEach(([n,p]) => {
+                const id = `e4d_${Date.now()}_${Math.random()}`;
+                const ref = studentsCollection.doc(id);
+                batch.set(ref, { id, nom: n, prenom: p, grade: "EPL4", brigade: "Delta", presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
+            });
+            e5Alpha.forEach(([n,p]) => {
+                const id = `e5a_${Date.now()}_${Math.random()}`;
+                const ref = studentsCollection.doc(id);
+                batch.set(ref, { id, nom: n, prenom: p, grade: "EPL5", brigade: "Alpha", presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
+            });
+            e5Bravo.forEach(([n,p]) => {
+                const id = `e5b_${Date.now()}_${Math.random()}`;
+                const ref = studentsCollection.doc(id);
+                batch.set(ref, { id, nom: n, prenom: p, grade: "EPL5", brigade: "Bravo", presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
+            });
+            e5Charlie.forEach(([n,p]) => {
+                const id = `e5c_${Date.now()}_${Math.random()}`;
+                const ref = studentsCollection.doc(id);
+                batch.set(ref, { id, nom: n, prenom: p, grade: "EPL5", brigade: "Charlie", presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
+            });
+
+            await batch.commit();
+            console.log("Tous les élèves ont été créés.");
+        }
+
+        function startSync() {
+            studentsCollection.onSnapshot(snapshot => {
+                allStudents = [];
+                snapshot.forEach(doc => allStudents.push(doc.data()));
+                // Tri : d'abord par promotion (EPL3, EPL4, EPL5), puis par nom, puis prénom
+                const gradeOrder = { "EPL3": 1, "EPL4": 2, "EPL5": 3 };
+                allStudents.sort((a, b) => {
+                    const orderA = gradeOrder[a.grade] || 99;
+                    const orderB = gradeOrder[b.grade] || 99;
+                    if (orderA !== orderB) return orderA - orderB;
+                    const nomCompare = a.nom.localeCompare(b.nom, 'fr', { sensitivity: 'base' });
+                    if (nomCompare !== 0) return nomCompare;
+                    return a.prenom.localeCompare(b.prenom, 'fr', { sensitivity: 'base' });
+                });
+                renderTable();
+                syncIndicator.innerHTML = "✅ Synchronisé";
+                syncIndicator.style.color = "#15803d";
+            }, error => {
+                console.error("Firestore onSnapshot error:", error);
+                syncIndicator.innerHTML = "⚠️ Erreur de connexion Firestore";
+                syncIndicator.style.color = "#b91c1c";
+            });
+            settingsDocRef.onSnapshot(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    customMotifs = data.customMotifs || [];
+                    if (data.lieu) lieuInput.value = data.lieu;
+                    if (data.date) dateInput.value = data.date;
+                } else {
+                    settingsDocRef.set({ customMotifs: [], lieu: "BENSLIMANE", date: "01/05/2026" });
+                }
+                renderTable();
+            });
+        }
+
+        // Événements des boutons
+        document.querySelectorAll(".icon-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const grade = btn.getAttribute("data-grade");
+                const brigade = btn.getAttribute("data-brigade") || null;
+                const action = btn.getAttribute("data-action");
+                if (action === "pres-all") {
+                    if (confirm(`Marquer toute la ${grade}${brigade ? " brigade "+brigade : ""} comme PRÉSENTE ?`))
+                        setBrigadePresence(grade, brigade, "PRESENT");
+                } else if (action === "abs-all") {
+                    let motif = prompt("Motif d'absence :", "MISSION");
+                    if (motif !== null) setBrigadePresence(grade, brigade, "ABSENT", motif.trim().toUpperCase());
+                } else if (action === "add") {
+                    const nom = prompt("Nom du nouvel élève :");
+                    if (!nom || !nom.trim()) return;
+                    const prenom = prompt("Prénom :");
+                    if (!prenom || !prenom.trim()) return;
+                    addStudent(grade, brigade, nom, prenom);
+                }
+            });
+        });
+
+        document.querySelectorAll(".filter-btn[data-filter]").forEach(btn => {
+            btn.addEventListener("click", () => {
+                activeFilter = btn.getAttribute("data-filter");
+                document.querySelectorAll(".filter-btn[data-filter]").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                searchInput.value = "";
+                renderTable();
+            });
+        });
+        document.querySelector(".filter-btn[data-filter='all']")?.classList.add("active");
+        searchInput.addEventListener("input", () => renderTable());
+        lieuInput.addEventListener("change", async () => { await settingsDocRef.update({ lieu: lieuInput.value }); });
+        dateInput.addEventListener("change", async () => { await settingsDocRef.update({ date: dateInput.value }); });
+        document.getElementById("resetPresentBtn").addEventListener("click", async () => {
+            if (!confirm("Remettre TOUS les élèves en PRÉSENT ?")) return;
+            for (const s of allStudents) {
+                await studentsCollection.doc(s.id).update({ presence: "PRESENT", motif: "", lastModified: firebase.firestore.FieldValue.serverTimestamp(), modifiedBy: deviceId });
+            }
+        });
+        document.getElementById("generateDocBtn").addEventListener("click", () => {
+            const lieu = lieuInput.value;
+            const date = dateInput.value;
+            const list = [...allStudents];
+            const e3 = list.filter(s=>s.grade==="EPL3");
+            const e4 = list.filter(s=>s.grade==="EPL4");
+            const e5 = list.filter(s=>s.grade==="EPL5");
+            const e3p = e3.filter(s=>s.presence==="PRESENT").length;
+            const e4p = e4.filter(s=>s.presence==="PRESENT").length;
+            const e5p = e5.filter(s=>s.presence==="PRESENT").length;
+            const absents = list.filter(s=>s.presence==="ABSENT");
+            const motifMap = new Map();
+            absents.forEach(a => { let m = a.motif?.trim() || "SANS MOTIF"; if(!motifMap.has(m)) motifMap.set(m,[]); motifMap.get(m).push(`${a.grade} ${a.nom} ${a.prenom}${a.brigade?` (${a.brigade})`:""}`); });
+            let absentRows = "";
+            if(absents.length===0) absentRows = "<tr><td colspan='2'>Aucune absence</td></tr>";
+            else for(const [mot,pers] of motifMap) absentRows += `<tr><td><strong>${mot} (${pers.length})</strong></td><td>${pers.join(" ; ")}</td></tr>`;
+            const docHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bulletin_Appel_${date}</title><style>body{font-family:'Times New Roman',serif;margin:2.5cm;}table{border-collapse:collapse;width:100%;margin:20px 0;}th,td{border:1px solid #000;padding:6px;}</style></head><body><div style="text-align:right"><p>Lieu : ${lieu}</p><p>Date : ${date}</p></div><h1 style="text-align:center">BULLETIN D'APPEL<br>CIPL</h1><h2>Effectifs</h2><table><thead><tr><th>Promotion</th><th>Effectif</th><th>Présents</th><th>Absents</th></tr></thead><tbody><tr><td>EPL3</td><td>${e3.length}</td><td>${e3p}</td><td>${e3.length-e3p}</td></tr><tr><td>EPL4</td><td>${e4.length}</td><td>${e4p}</td><td>${e4.length-e4p}</td></tr><tr><td>EPL5</td><td>${e5.length}</td><td>${e5p}</td><td>${e5.length-e5p}</td></tr><tr style="font-weight:bold;"><td>TOTAL</td><td>${list.length}</td><td>${list.filter(s=>s.presence==="PRESENT").length}</td><td>${list.filter(s=>s.presence==="ABSENT").length}</td></tr></tbody></table><h2>Absents par motif</h2><table><thead><tr><th>Motif (nb)</th><th>Élèves</th></tr></thead><tbody>${absentRows}</tbody></table><div style="margin-top:60px;"><p>L'OFFICIER DE PERMANENCE : _________________________</p><p>Le COMMANDANT DU CENTRE : _________________________</p></div></body></html>`;
+            const blob = new Blob([docHtml], { type: "application/msword" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = `Bulletin_Appel_${date.replace(/\//g,"-")}.doc`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        });
+
+        initializeDataIfEmpty().then(() => startSync()).catch(err => console.error("Init error:", err));
+    })();
+</script>
+</body>
+</html>
