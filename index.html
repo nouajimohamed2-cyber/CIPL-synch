@@ -47,7 +47,6 @@
         .absent-num { color: #b91c1c; }
         .promo-stats { display: flex; gap: 16px; padding: 0 24px 16px 24px; flex-wrap: wrap; }
         .promo-stat-card { flex: 1; min-width: 140px; background: white; border-radius: 14px; padding: 11px 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 4px solid; text-align: center; }
-        .promo-stat-card.epl3 { border-left-color: #8b5cf6; background: #f5f3ff; }
         .promo-stat-card.epl4 { border-left-color: #10b981; background: #ecfdf5; }
         .promo-stat-card.epl5 { border-left-color: #f59e0b; background: #fffbeb; }
         .table-wrapper { padding: 0 22px 22px; overflow-x: auto; }
@@ -57,7 +56,6 @@
         tbody tr:hover td { background: #f8fafc; }
         .absent-row td { background: #fff6f0 !important; }
         .grade-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-weight: 800; font-size: 11px; min-width: 55px; }
-        .grade-epl3 { background: #8b5cf6; color: white; }
         .grade-epl4 { background: #10b981; color: white; }
         .grade-epl5 { background: #f59e0b; color: white; }
         .brig-badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-weight: 700; font-size: 11px; min-width: 60px; }
@@ -113,7 +111,6 @@
     </div>
 
     <!-- Filtres -->
-    <div class="filter-section"><div class="filter-group"><span class="filter-label">🟣 EPL3</span><button class="filter-btn" data-filter="epl3">EPL3</button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL3" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL3" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL3" data-action="add">➕ Ajouter</button></div></div></div>
     <div class="filter-section"><div class="filter-group"><span class="filter-label">🎓 EPL4</span><button class="filter-btn" data-filter="epl4_Alpha">🔵 Alpha <span id="e4AlphaCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL4" data-brigade="Alpha" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Alpha" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Alpha" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl4_Bravo">🟢 Bravo <span id="e4BravoCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL4" data-brigade="Bravo" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Bravo" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Bravo" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl4_Charlie">🟡 Charlie <span id="e4CharlieCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL4" data-brigade="Charlie" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Charlie" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Charlie" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl4_Delta">🔴 Delta <span id="e4DeltaCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL4" data-brigade="Delta" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Delta" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL4" data-brigade="Delta" data-action="add">➕ Ajouter</button></div></div></div>
     <div class="filter-section"><div class="filter-group"><span class="filter-label">✈️ EPL5</span><button class="filter-btn" data-filter="epl5_Alpha">🔵 Alpha <span id="e5AlphaCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL5" data-brigade="Alpha" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Alpha" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Alpha" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl5_Bravo">🟢 Bravo <span id="e5BravoCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL5" data-brigade="Bravo" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Bravo" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Bravo" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl5_Charlie">🟡 Charlie <span id="e5CharlieCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL5" data-brigade="Charlie" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Charlie" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Charlie" data-action="add">➕ Ajouter</button></div></div><div class="filter-group"><button class="filter-btn" data-filter="epl5_Delta">🔴 Delta <span id="e5DeltaCount" class="filter-count">0</span></button><div class="brigade-actions"><button class="icon-btn" data-grade="EPL5" data-brigade="Delta" data-action="pres-all">✅ Tous présents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Delta" data-action="abs-all">❌ Tous absents</button><button class="icon-btn" data-grade="EPL5" data-brigade="Delta" data-action="add">➕ Ajouter</button></div></div></div>
     <div class="filter-section"><div class="filter-group"><button class="filter-btn active" data-filter="all">🌍 Afficher toutes les promotions</button></div></div>
@@ -177,7 +174,6 @@
         let allStudents = [];
         let customMotifs = [];
         let activeFilter = "all";
-        let isInitialized = false;
 
         const tbody = document.getElementById("tableBody");
         const totalSpan = document.getElementById("totalCount");
@@ -212,19 +208,16 @@
                 }
                 recapDiv.innerHTML = h;
             }
-            const e3 = list.filter(s=>s.grade==="EPL3");
             const e4 = list.filter(s=>s.grade==="EPL4");
             const e5 = list.filter(s=>s.grade==="EPL5");
             promoStatsDiv.innerHTML = `
-                <div class="promo-stat-card epl3"><div class="promo-title">🟣 EPL3</div><div class="promo-numbers"><span>📊 ${e3.length}</span><span>✅ ${e3.filter(s=>s.presence==="PRESENT").length}</span><span>❌ ${e3.filter(s=>s.presence==="ABSENT").length}</span></div></div>
                 <div class="promo-stat-card epl4"><div class="promo-title">🟢 EPL4</div><div class="promo-numbers"><span>📊 ${e4.length}</span><span>✅ ${e4.filter(s=>s.presence==="PRESENT").length}</span><span>❌ ${e4.filter(s=>s.presence==="ABSENT").length}</span></div></div>
                 <div class="promo-stat-card epl5"><div class="promo-title">🟡 EPL5</div><div class="promo-numbers"><span>📊 ${e5.length}</span><span>✅ ${e5.filter(s=>s.presence==="PRESENT").length}</span><span>❌ ${e5.filter(s=>s.presence==="ABSENT").length}</span></div></div>`;
         }
 
         function renderTable() {
             let list = [...allStudents];
-            if (activeFilter === "epl3") list = list.filter(s => s.grade === "EPL3");
-            else if (activeFilter === "epl4_Alpha") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Alpha");
+            if (activeFilter === "epl4_Alpha") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Alpha");
             else if (activeFilter === "epl4_Bravo") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Bravo");
             else if (activeFilter === "epl4_Charlie") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Charlie");
             else if (activeFilter === "epl4_Delta") list = list.filter(s => s.grade === "EPL4" && s.brigade === "Delta");
@@ -241,7 +234,7 @@
             } else {
                 list.forEach((s, idx) => {
                     const isAbsent = s.presence === "ABSENT";
-                    const gradeClass = s.grade === 'EPL3' ? 'grade-epl3' : (s.grade === 'EPL4' ? 'grade-epl4' : 'grade-epl5');
+                    const gradeClass = s.grade === 'EPL4' ? 'grade-epl4' : 'grade-epl5';
                     let brigadeHtml = `<span class="brig-badge bb-none">—</span>`;
                     if (s.brigade) {
                         const icon = {Alpha:'🔵', Bravo:'🟢', Charlie:'🟡', Delta:'🔴'}[s.brigade] || '';
@@ -343,7 +336,6 @@
             }
         }
 
-        // Fonction de réinitialisation des données
         async function resetAllData() {
             if (!confirm("⚠️ ATTENTION ! Cette action va supprimer TOUTES les données existantes et les réinitialiser avec la liste complète des élèves. Êtes-vous sûr ?")) return;
             if (!confirm("⚠️ CONFIRMATION FINALE : Toutes les données seront perdues. Continuer ?")) return;
@@ -352,7 +344,6 @@
                 document.getElementById("syncIndicator").innerHTML = "⏳ Réinitialisation en cours...";
                 document.getElementById("syncIndicator").style.color = "#f59e0b";
                 
-                // Supprimer tous les documents de la collection
                 const snapshot = await studentsCollection.get();
                 const batch = db.batch();
                 snapshot.forEach(doc => {
@@ -361,7 +352,6 @@
                 await batch.commit();
                 console.log("✅ Tous les étudiants supprimés");
                 
-                // Réinitialiser les données
                 await initializeData();
                 
                 document.getElementById("syncIndicator").innerHTML = "✅ Données réinitialisées !";
@@ -376,51 +366,107 @@
         async function initializeData() {
             console.log("Création des données initiales...");
 
-            const epl3Data = [
-                {nom:"ACHAHBOUNE", prenom:"MOHAMMED AMINE"},{nom:"CHIHAB", prenom:"ESSAFI"},
-                {nom:"EL FASSI EL FIHRI", prenom:"MOHAMED"},{nom:"EL MAACHI", prenom:"HASSAN"},
-                {nom:"FOURARI", prenom:"YOUSSEF"},{nom:"HASSOUN", prenom:"AYA"},
-                {nom:"KASSID", prenom:"YASSINE"},{nom:"KHABOUSS", prenom:"YAHIA"},
-                {nom:"KIKER", prenom:"ABDERAHMAN"},{nom:"MEZRITI", prenom:"HOUDA"},
-                {nom:"NAJIH", prenom:"SAAD"},{nom:"NAKOURI", prenom:"MOHAMMED"},
-                {nom:"NASSIH", prenom:"SALAHEDDINE"},{nom:"OUCHALA", prenom:"OUSSAMA"},
-                {nom:"RAMDANI", prenom:"IKRAM"},{nom:"REMMAN", prenom:"SALIM"},
-                {nom:"ZEJLI", prenom:"LAMIAE"},{nom:"ZOUHIR", prenom:"RACHID"}
-            ];
+            // EPL4 - Alpha
             const e4Alpha = [
-                ["BABALAHCEN","MOHAMED"],["BENALI","ANAS"],["BOUALLAGA","HAJAR"],["BOUZEGGAR","ADAM"],["DAOUDI","ACHRAF"],["EL BACHIRI","KHALIL"],["EL OMARI","NISRINE"],["EL KHAL","HATIM"],["EZ-ZAHOURI","AYMANE"],["GUITAOUI","AYA"],["HADAR","AHMED"],["KARMOUCHI","HIND"],["KAROUCHI","SALAHEDDINE"],["KASSBI","MOUAD"],["MEHNI","FATIMA EZZAHRA"],["MOUNAZIH","ILYASSE"],["NACIRI","SOUHAYLA"],["OUAKOUR","AYMANE"],["OUBENAL","HIBA"],["RAJAD","AFAF"],["REDA","SYHAM"],["SOUFI","MOHAMED"],["ZEKKAOUI","IHSSAN"]
+                ["BABALAHCEN","MOHAMED"],["BENALI","ANAS"],["BOUALLAGA","HAJAR"],
+                ["BOUZEGGAR","ADAM"],["DAOUDI","ACHRAF"],["EL BACHIRI","KHALIL"],
+                ["EL OMARI","NISRINE"],["EL KHAL","HATIM"],["EZ-ZAHOURI","AYMANE"],
+                ["GUITAOUI","AYA"],["HADAR","AHMED"],["KARMOUCHI","HIND"],
+                ["KAROUCHI","SALAHEDDINE"],["KASSBI","MOUAD"],["MEHNI","FATIMA EZZAHRA"],
+                ["MOUNAZIH","ILYASSE"],["NACIRI","SOUHAYLA"],["OUAKOUR","AYMANE"],
+                ["OUBENAL","HIBA"],["RAJAD","AFAF"],["REDA","SYHAM"],
+                ["SOUFI","MOHAMED"],["ZEKKAOUI","IHSSAN"]
             ];
+
+            // EPL4 - Bravo
             const e4Bravo = [
-                ["ECHBIHI","REDA"],["KHATTA","HAFSA"],["BOUNSIR","RANIA"],["ZAINABI","OTHMANE"],["BENAROUD","YOUSSEF"],["DERRAR","IKRAM"],["MESBAHI","MOHAMED"],["TAHROUCH","MARIA"],["KHABBAZ","KHALID"],["INEFLAS","ABDERRAHMANE"],["BARHRHOUJ","WIAME"],["MOURID","AHLAM"],["BOUCHRAHI","YASSMINE"],["LAMRANI","LINA"],["EL ALAMA","RAYANE"],["EL FAROUKI","AYMAN"],["AZOUGHAGH","WAEL"],["MESSOUDI","MOUAD"],["FITHANE","SARAH"],["SAFI","ALAA"],["OUACHAO","MOHAMMED"],["ABDELLAOUI","SOUFIANE"],["KARIM","YAHYA"]
+                ["ECHBIHI","REDA"],["KHATTA","HAFSA"],["BOUNSIR","RANIA"],
+                ["ZAINABI","OTHMANE"],["BENAROUD","YOUSSEF"],["DERRAR","IKRAM"],
+                ["MESBAHI","MOHAMED"],["TAHROUCH","MARIA"],["KHABBAZ","KHALID"],
+                ["INEFLAS","ABDERRAHMANE"],["BARHRHOUJ","WIAME"],["MOURID","AHLAM"],
+                ["BOUCHRAHI","YASSMINE"],["LAMRANI","LINA"],["EL ALAMA","RAYANE"],
+                ["EL FAROUKI","AYMAN"],["AZOUGHAGH","WAEL"],["MESSOUDI","MOUAD"],
+                ["FITHANE","SARAH"],["SAFI","ALAA"],["OUACHAO","MOHAMMED"],
+                ["ABDELLAOUI","SOUFIANE"],["KARIM","YAHYA"]
             ];
+
+            // EPL4 - Charlie
             const e4Charlie = [
-                ["Afzagour","Hafsa"],["Ahmid","Youssef"],["Ahouzi","Zakaria"],["Bahir","Hajar"],["Belghiti","Asmae"],["Benabed","Hassan"],["Jamal Eddine","Ibrahim"],["Boughlala","Haitham"],["Bouhzama","Driss"],["Darrag","Fatima Zahra"],["Eddahbi","Oussama"],["El Ouardini","Reda"],["El Rhazoui","Mokhtar"],["Ghouat","Mohamed"],["Guerrab","Wissal"],["Jouahi","Adnane"],["Hanafi","Hamza Souhail"],["Hdouch","Ahmed"],["Laaroussi","Ali"],["Moujoual","Aya"],["Rafei","Adam"],["Wadih","Badr"],["BENHAMMOU","MOHAMMED"]
+                ["AFZAGOUR","HAFSA"],["AHMID","YOUSSEF"],["AHOUZI","ZAKARIA"],
+                ["BAHIR","HAJAR"],["BELGHITI","ASMAE"],["BENABED","HASSAN"],
+                ["JAMAL EDDINE","IBRAHIM"],["BOUGHLALA","HAITHAM"],["BOUHZAMA","DRISS"],
+                ["DARRAG","FATIMA ZAHRA"],["EDDAHBI","OUSSAMA"],["EL OUARDINI","REDA"],
+                ["EL RHAZOUI","MOKHTAR"],["GHOUAT","MOHAMED"],["GUERRAB","WISSAL"],
+                ["JOUAHI","ADNANE"],["HANAFI","HAMZA SOUHAIL"],["HDOUCH","AHMED"],
+                ["LAAROUSSI","ALI"],["MOUJOUAL","AYA"],["RAFEI","ADAM"],
+                ["WADIH","BADR"],["BENHAMMOU","MOHAMMED"]
             ];
+
+            // EPL4 - Delta
             const e4Delta = [
-                ["AMALI","ZAKARIAE"],["ASKAOUYIT","YOUSSEF"],["BENBOUCHTA","ABDELADIM"],["BOUAKIL","SALAH"],["CHENTOUF","ABIR"],["EDDAOUDI","SAAD"],["EL ATARI","ADAM"],["ELHASSOUNI","MOURAD"],["EL HIHI","MANAL"],["EL YAAGOUBI","ABELGHANI"],["KARAMI","ADAM"],["KIDARI","RIM"],["MACHCMOURE","ACHRAF"],["NAJI","HAYTHAM"],["OUDDI","MOHAMMED"],["SKALLI","MEHDI"],["TABACHE","WASSIM"],["TAFALI","WAJIH"],["TOUZI","WISSAL"],["ZAD","BASMA"],["BENICHOU","DOAA"],["BOUHRAOUA","ISSAM"],["MERBAH","HOSSAM"]
+                ["AMALI","ZAKARIAE"],["ASKAOUYIT","YOUSSEF"],["BENBOUCHTA","ABDELADIM"],
+                ["BOUAKIL","SALAH"],["CHENTOUF","ABIR"],["EDDAOUDI","SAAD"],
+                ["EL ATARI","ADAM"],["ELHASSOUNI","MOURAD"],["EL HIHI","MANAL"],
+                ["EL YAAGOUBI","ABELGHANI"],["KARAMI","ADAM"],["KIDARI","RIM"],
+                ["MACHCMOURE","ACHRAF"],["NAJI","HAYTHAM"],["OUDDI","MOHAMMED"],
+                ["SKALLI","MEHDI"],["TABACHE","WASSIM"],["TAFALI","WAJIH"],
+                ["TOUZI","WISSAL"],["ZAD","BASMA"],["BENICHOU","DOAA"],
+                ["BOUHRAOUA","ISSAM"],["MERBAH","HOSSAM"]
             ];
+
+            // EPL5 - Alpha (16 élèves)
             const e5Alpha = [
-                ["SMIDI","AMINE"],["LOTF ELILAH","ABDELBASSET"],["ALKALAY","SAAD"],["HAZZOUTE","TARIK"],["BAKKALI","IMRANE"],["RIDA","OUSSAMA"],["BENCHAJIA","MOHAMED REDA"],["GOUCHY","OUSSAMA"],["EL MOUSTARIH","HAFSSA"],["TOURAOUI","MOHAMED"],["LOUEKILI","MEHDI"],["BELRHITI","ABRARE"],["AIT KECHKECH","ANASS"],["AIT BENAALI","AMINE"],["ASSABAA","SAAD"],["BOURRAIS","AFAF"]
+                ["SMIDI","AMINE"],["LOTF ELILAH","ABDELBASSET"],["ALKALAY","SAAD"],
+                ["HAZZOUTE","TARIK"],["BAKKALI","IMRANE"],["RIDA","OUSSAMA"],
+                ["BENCHAJIA","MOHAMED REDA"],["GOUCHY","OUSSAMA"],["EL MOUSTARIH","HAFSSA"],
+                ["TOURAOUI","MOHAMED"],["LOUEKILI","MEHDI"],["BELRHITI","ABRARE"],
+                ["AIT KECHKECH","ANASS"],["AIT BENAALI","AMINE"],["ASSABAA","SAAD"],
+                ["BOURRAIS","AFAF"]
             ];
+
+            // EPL5 - Bravo (21 élèves)
             const e5Bravo = [
-                ["OUKERROU","MOUAAD"],["OUAKAF","EL MEHDI"],["BENCHEKROUN","SALIM"],["MRABT","ZAKARIAE"],["EL OIZANI","ANASS"],["ELHAOUATE","MOHAMED"],["ZOUHRY","WALID"],["TINDOUFTE","MOHAMED TAHA"],["HAJRI","AYA"],["HASSOUNY","AYMAN"],["BERRAHOU","TAHA AHMED"],["AIT BEN HASSI","YOUSSEF AMINE"],["LAAYOUNE","MAJD"],["HAFI","LUKMAN"],["EL GOUTIT","AICHA"],["EL JEMMALI","OUMAIMA"],["BELBARD","ASSMAA"],["SELLAL","BASMA"],["BAKKAL","ANAS"],["LAMINE","MOHAMED BADR"],["MOULABBI","ANAS"]
+                ["OUKERROU","MOUAAD"],["OUAKAF","EL MEHDI"],["BENCHEKROUN","SALIM"],
+                ["MRABT","ZAKARIAE"],["EL OIZANI","ANASS"],["ELHAOUATE","MOHAMED"],
+                ["ZOUHRY","WALID"],["TINDOUFTE","MOHAMED TAHA"],["HAJRI","AYA"],
+                ["HASSOUNY","AYMAN"],["BERRAHOU","TAHA AHMED"],["AIT BEN HASSI","YOUSSEF AMINE"],
+                ["LAAYOUNE","MAJD"],["HAFI","LUKMAN"],["EL GOUTIT","AICHA"],
+                ["EL JEMMALI","OUMAIMA"],["BELBARD","ASSMAA"],["SELLAL","BASMA"],
+                ["BAKKAL","ANAS"],["LAMINE","MOHAMED BADR"],["MOULABBI","ANAS"]
             ];
+
+            // EPL5 - Charlie (21 élèves)
             const e5Charlie = [
-                ["AMRHAR","HAITAM"],["BARIZ","ABDESSAMAD"],["EL-ACHIR","TAHA"],["AIT MANSOR","FATIMA EZZAHRA"],["EL MEKHANTAR","AYMANE"],["AL KHARASSANI","ABDELGHANI"],["CHOUIKH","HICHAM"],["RGUIG","KAWTAR"],["MOUHSSINY","KARIM"],["AMELI","AHMED YASSINE"],["SAOUD","KHADIJA"],["BOUMHAIDI","AMINE"],["NAJIHI","ANAS"],["KHALED","FAHD"],["EL IDRISSI BOUZAIDI","HATIM"],["ABBOUR","MOHAMED REDA"],["BRICHA","YOUSSRA"],["MOHAMED ABDOU","SEIF-EDDINE"],["HEDDA","ABDERRAHMANE"],["RAHOUI","YOUSSEF"],["BAMMI","SAFAE"]
+                ["AMRHAR","HAITAM"],["BARIZ","ABDESSAMAD"],["EL-ACHIR","TAHA"],
+                ["AIT MANSOR","FATIMA EZZAHRA"],["EL MEKHANTAR","AYMANE"],["AL KHARASSANI","ABDELGHANI"],
+                ["CHOUIKH","HICHAM"],["RGUIG","KAWTAR"],["MOUHSSINY","KARIM"],
+                ["AMELI","AHMED YASSINE"],["SAOUD","KHADIJA"],["BOUMHAIDI","AMINE"],
+                ["NAJIHI","ANAS"],["KHALED","FAHD"],["EL IDRISSI BOUZAIDI","HATIM"],
+                ["ABBOUR","MOHAMED REDA"],["BRICHA","YOUSSRA"],["MOHAMED ABDOU","SEIF-EDDINE"],
+                ["HEDDA","ABDERRAHMANE"],["RAHOUI","YOUSSEF"],["BAMMI","SAFAE"]
             ];
-            // EPL5 Delta
+
+            // EPL5 - Delta (38 élèves de l'image)
             const e5Delta = [
-                ["AIT BOUCHTART","ADAM"],["AKKAOUI","YOUSSEF"],["BAHAZI","HAMZA"],["BOUCHTAOUI","EL MEHDI"],["DARDAR","NASSIM"],["EL AADAD","NABIL"],["EL BACHIRI","MOHAMED AMINE"],["EL HOUSSINI","MOHSINE"],["EL IDRISSI","SIHAM"],["EL KHAL","MOHAMED"],["EL MOUTI","ABDELFATTAH"],["EL OUALI","MOHAMED"],["HADDAD","YASSIR"],["KARMOUCH","ADIL"],["KASSBI","NABIL"],["KERROUMI","SAID"],["LAMGHARI","ABDELLAH"],["MLIHA","ANAS"],["NASSIH","AMINE"],["OUAKAF","YASSINE"],["TAHIRI","BILAL"]
+                ["ADJAR","ISLAM"],["AJIDAD","KHAWLA"],["AUNI","YASSIR"],
+                ["ASSELLALOU","MOHAMED REDA"],["ATTI","ANASS"],["BAHIH","HIBA"],
+                ["BAKKAL","AMINE"],["BOUABDALLI","AYMAN"],["BOUAROURO","BILAL"],
+                ["BOUGARN","TAHA AMINE"],["BOUKHELKHAL","MOHAMED"],["DAHBANY","ABDELLAH"],
+                ["ELACHABY","IDRISS"],["EL AMAL","ACHRAF"],["EL ASRI","FADILA"],
+                ["EL FAHAM","HATIM"],["EL GHAMRAOUI","ADAM"],["EL GHANAMI EL IDRISSI","HANAA"],
+                ["EL HANAFI","MOHAMED ILYAS"],["EL HAZIBI","YASSER"],["EL KARKACHI","FATIMA EZZAHRA"],
+                ["EL MANAR","DILAR"],["EL MANSOURI","MEROUANE"],["EL-HAJI","ADAM"],
+                ["ELMORTAQUI","SAAD"],["HABIBI","JIHANE"],["HAJJI","AYMAN"],
+                ["HAMMI","ADAM"],["JAI MANSOURI","HANAE"],["JALAL","HIBA"],
+                ["LAAZIZI","WIAM"],["MAJBAR","HAMZA"],["SABRI","IMANE"],
+                ["SALIMI","IMANE"],["SARHI","MEHDI"],["SNOUSSI","NABIL KEBIR"],
+                ["YAACOUBI","HAMZA"],["ZAIM","MOUAAD"]
             ];
 
             const batch = db.batch();
             const now = firebase.firestore.FieldValue.serverTimestamp();
 
-            epl3Data.forEach(s => {
-                const id = `e3_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-                const ref = studentsCollection.doc(id);
-                batch.set(ref, { id, nom: s.nom, prenom: s.prenom, grade: "EPL3", brigade: null, presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
-            });
+            // Ajout EPL4
             e4Alpha.forEach(([n,p]) => {
                 const id = `e4a_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
                 const ref = studentsCollection.doc(id);
@@ -441,6 +487,8 @@
                 const ref = studentsCollection.doc(id);
                 batch.set(ref, { id, nom: n, prenom: p, grade: "EPL4", brigade: "Delta", presence: "PRESENT", motif: "", created: now, lastModified: now, modifiedBy: deviceId });
             });
+
+            // Ajout EPL5
             e5Alpha.forEach(([n,p]) => {
                 const id = `e5a_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
                 const ref = studentsCollection.doc(id);
@@ -464,8 +512,8 @@
 
             await batch.commit();
             console.log("✅ Tous les élèves ont été créés.");
+            console.log(`📊 Total: ${e4Alpha.length + e4Bravo.length + e4Charlie.length + e4Delta.length + e5Alpha.length + e5Bravo.length + e5Charlie.length + e5Delta.length} élèves`);
             
-            // Mettre à jour les settings
             await settingsDocRef.set({ customMotifs: [], lieu: "BENSLIMANE", date: "01/05/2026" }, { merge: true });
         }
 
@@ -473,7 +521,7 @@
             studentsCollection.onSnapshot(snapshot => {
                 allStudents = [];
                 snapshot.forEach(doc => allStudents.push(doc.data()));
-                const gradeOrder = { "EPL3": 1, "EPL4": 2, "EPL5": 3 };
+                const gradeOrder = { "EPL4": 1, "EPL5": 2 };
                 allStudents.sort((a, b) => {
                     const orderA = gradeOrder[a.grade] || 99;
                     const orderB = gradeOrder[b.grade] || 99;
@@ -555,10 +603,8 @@
             const lieu = lieuInput.value;
             const date = dateInput.value;
             const list = [...allStudents];
-            const e3 = list.filter(s=>s.grade==="EPL3");
             const e4 = list.filter(s=>s.grade==="EPL4");
             const e5 = list.filter(s=>s.grade==="EPL5");
-            const e3p = e3.filter(s=>s.presence==="PRESENT").length;
             const e4p = e4.filter(s=>s.presence==="PRESENT").length;
             const e5p = e5.filter(s=>s.presence==="PRESENT").length;
             const absents = list.filter(s=>s.presence==="ABSENT");
@@ -567,7 +613,7 @@
             let absentRows = "";
             if(absents.length===0) absentRows = "<tr><td colspan='2'>Aucune absence</td></tr>";
             else for(const [mot,pers] of motifMap) absentRows += `<tr><td><strong>${mot} (${pers.length})</strong></td><td>${pers.join(" ; ")}</td></tr>`;
-            const docHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bulletin_Appel_${date}</title><style>body{font-family:'Times New Roman',serif;margin:2.5cm;}table{border-collapse:collapse;width:100%;margin:20px 0;}th,td{border:1px solid #000;padding:6px;}</style></head><body><div style="text-align:right"><p>Lieu : ${lieu}</p><p>Date : ${date}</p></div><h1 style="text-align:center">BULLETIN D'APPEL<br>CIPL</h1><h2>Effectifs</h2><table><thead><tr><th>Promotion</th><th>Effectif</th><th>Présents</th><th>Absents</th></tr></thead><tbody><tr><td>EPL3</td><td>${e3.length}</td><td>${e3p}</td><td>${e3.length-e3p}</td></tr><tr><td>EPL4</td><td>${e4.length}</td><td>${e4p}</td><td>${e4.length-e4p}</td></tr><tr><td>EPL5</td><td>${e5.length}</td><td>${e5p}</td><td>${e5.length-e5p}</td></tr><tr style="font-weight:bold;"><td>TOTAL</td><td>${list.length}</td><td>${list.filter(s=>s.presence==="PRESENT").length}</td><td>${list.filter(s=>s.presence==="ABSENT").length}</td></tr></tbody></table><h2>Absents par motif</h2><table><thead><tr><th>Motif (nb)</th><th>Élèves</th></tr></thead><tbody>${absentRows}</tbody></table><div style="margin-top:60px;"><p>L'OFFICIER DE PERMANENCE : _________________________</p><p>Le COMMANDANT DU CENTRE : _________________________</p></div></body></html>`;
+            const docHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bulletin_Appel_${date}</title><style>body{font-family:'Times New Roman',serif;margin:2.5cm;}table{border-collapse:collapse;width:100%;margin:20px 0;}th,td{border:1px solid #000;padding:6px;}</style></head><body><div style="text-align:right"><p>Lieu : ${lieu}</p><p>Date : ${date}</p></div><h1 style="text-align:center">BULLETIN D'APPEL<br>CIPL</h1><h2>Effectifs</h2><table><thead><tr><th>Promotion</th><th>Effectif</th><th>Présents</th><th>Absents</th></tr></thead><tbody><tr><td>EPL4</td><td>${e4.length}</td><td>${e4p}</td><td>${e4.length-e4p}</td></tr><tr><td>EPL5</td><td>${e5.length}</td><td>${e5p}</td><td>${e5.length-e5p}</td></tr><tr style="font-weight:bold;"><td>TOTAL</td><td>${list.length}</td><td>${list.filter(s=>s.presence==="PRESENT").length}</td><td>${list.filter(s=>s.presence==="ABSENT").length}</td></tr></tbody></table><h2>Absents par motif</h2><table><thead><tr><th>Motif (nb)</th><th>Élèves</th></tr></thead><tbody>${absentRows}</tbody></table><div style="margin-top:60px;"><p>L'OFFICIER DE PERMANENCE : _________________________</p><p>Le COMMANDANT DU CENTRE : _________________________</p></div></body></html>`;
             const blob = new Blob([docHtml], { type: "application/msword" });
             const a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
@@ -576,7 +622,7 @@
             URL.revokeObjectURL(a.href);
         });
 
-        // Démarrer la synchronisation et vérifier si des données existent
+        // Démarrer la synchronisation
         startSync();
         
         // Vérifier après un court délai si des données sont présentes
